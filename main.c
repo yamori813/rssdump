@@ -198,9 +198,6 @@ int httpreq()
 #endif
 //	printf("exit runloop %d\n", CFDataGetLength(dataBuffer));
 	
-	struct json_object *new_obj;
-	//	new_obj = json_tokener_parse("{\"foo\": 1 , \"bar\":2, \"buzz\": 3}");	
-	//	printf("new_obj.to_string()=%s\n", json_object_to_json_string(new_obj));
 	xmlParserCtxtPtr parserContext;
 	parserContext = xmlCreatePushParserCtxt(&gSaxHandler, NULL, NULL, 0, NULL);
 
