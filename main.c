@@ -204,10 +204,16 @@ int httpreq()
 //	printf("status code %d\n",statusCode);
 	
 	if(statusCode == 200) {
-	xmlParserCtxtPtr parserContext;
-		parserContext = xmlCreatePushParserCtxt(&gSaxHandler, NULL, NULL, 0, NULL);
+		CFStringRef contentStrRef = CFHTTPMessageCopyHeaderFieldValue(myResponse, CFSTR("Content-Type"));
+		char hdrbuff[1024];
+		CFStringGetCString( contentStrRef, hdrbuff, 1024, kCFStringEncodingUTF8 );
+//		printf("content-type %s\n", hdrbuff);
+		if(strcmp("text/xml; charset=UTF-8", hdrbuff) == 0) {
+			xmlParserCtxtPtr parserContext;
+			parserContext = xmlCreatePushParserCtxt(&gSaxHandler, NULL, NULL, 0, NULL);
 		
-		xmlParseChunk( parserContext, (const char*)CFDataGetBytePtr(dataBuffer), CFDataGetLength(dataBuffer), 0);
+			xmlParseChunk( parserContext, (const char*)CFDataGetBytePtr(dataBuffer), CFDataGetLength(dataBuffer), 0);
+		}
 	}
 
 	CFRelease(myRequest);
