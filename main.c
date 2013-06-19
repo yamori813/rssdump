@@ -197,11 +197,18 @@ int httpreq()
 	} while( nBytesRead > 0 );
 #endif
 //	printf("exit runloop %d\n", CFDataGetLength(dataBuffer));
+	CFHTTPMessageRef myResponse = (CFHTTPMessageRef)CFReadStreamCopyProperty(myReadStream,
+																			 kCFStreamPropertyHTTPResponseHeader);
+	CFStringRef myStatusLine = CFHTTPMessageCopyResponseStatusLine(myResponse);
+	UInt32 statusCode = CFHTTPMessageGetResponseStatusCode(myResponse);
+//	printf("status code %d\n",statusCode);
 	
+	if(statusCode == 200) {
 	xmlParserCtxtPtr parserContext;
-	parserContext = xmlCreatePushParserCtxt(&gSaxHandler, NULL, NULL, 0, NULL);
-
-	xmlParseChunk( parserContext, (const char*)CFDataGetBytePtr(dataBuffer), CFDataGetLength(dataBuffer), 0);
+		parserContext = xmlCreatePushParserCtxt(&gSaxHandler, NULL, NULL, 0, NULL);
+		
+		xmlParseChunk( parserContext, (const char*)CFDataGetBytePtr(dataBuffer), CFDataGetLength(dataBuffer), 0);
+	}
 
 	CFRelease(myRequest);
 	CFRelease(myURL);
